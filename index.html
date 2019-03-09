@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Online Chat</title>
+    <link href="stylesheet.css" rel="stylesheet">
+    <link rel="icon" href="icon.ico">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+    $(function () {
+      let socket = io();
+      let currentUser = {}
+      let chatMessages = []
+
+      socket.on('create user', function(obj){
+        if (document.cookie.split(';').filter((item) => item.trim().startsWith('name=')).length) {
+          console.log(document.cookie);
+          let cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)name\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+          currentUser.name = cookieValue;
+          currentUser.color = 'ffffff';
+          socket.emit('cookie exists', cookieValue);
+          $('.message-title').append($('<span>').text("You are " + cookieValue));
+        } else {
+          console.log('cookie does not exist')
+          document.cookie = "name="+obj.name;
+          socket.emit('cookie does not exist');
+          currentUser.name = obj.name;
+          currentUser.color = 'ffffff'
+          $('.message-title').append($('<span>').text("You are " + currentUser.name));
+        }
+      });
+      
+      $('form').submit(function(e){
+        e.preventDefault();
+        socket.emit('chat message', $('#message').val(), currentUser);
+        $('#message').val('');
+        return false;
+      });
+      
+      socket.on('you connected', function(){
+        $('#messages').append('<div><strong>Chat Room: You have connected</strong></div>');
+      });
+      
+      socket.on('user connected', function(user){
+        $('#messages').append($('<div>').text(user.name + " has connected"));
+      });
+      
+      socket.on('my message', function(msg, time, user){
+          if(msg != ""){
+            $('#messages').append('<div>'+ time + ' ' + '<p style="display: inline; color: #' + user.color + ';"> ' + user.name + '</p>' + ': ' +'<strong>'+ msg +'</strong>'+'</div>');
+          };
+      });
+
+      socket.on('user message', function(msg, time, user){
+          if(msg != ""){
+            $('#messages').append('<div>'+ time + ' ' + '<p style="display: inline; color: #' + user.color + ';"> ' + user.name + '</p>' + ': ' + msg + '</div>');
+          };
+      });
+      
+      socket.on('personal username change', function(user, time, oldName){
+          $('#messages').append('<div>' + time + " " + '<p style="display: inline; color: #' + user.color + ';"> ' + user.name + '</p>' + ": " + '<strong>' + oldName + " changed their username to " + user.name + '</strong>' + '</div>');
+          currentUser.name = user.name;
+          document.cookie = "name="+user.name;
+          $('.message-title').text("You are " + currentUser.name);
+      });
+
+      socket.on('personal color change', function(user, time){
+          $('#messages').append('<div>' + time + " " + '<p style="display: inline; color: #' + user.color + ';"> ' + user.name + '</p>' + ": " + '<strong>' + user.name + " changed their color " + '</strong>' + '</div>');
+          currentUser.color = user.color
+      });
+
+      socket.on('username change', function(user, time, oldName){
+          $('#messages').append($('<div>' + time + " " + '<p style="display: inline; color: #' + user.color + ';"> ' + user.name + '</p>' + ": " + oldName + " changed their username to " + user.name + '</div>'));
+      });
+
+       socket.on('color change', function(user, time){
+          $('#messages').append($('<div>' + time + " " + '<p style="display: inline; color: #' + user.color + ';"> ' + user.name + '</p>' + ": " + user.name + " changed their color" + '</div>'));
+      });
+
+      socket.on('username error', function() {
+        $('#messages').append('<div><strong>ERROR: That username is taken. Please try a different username</strong></div>');
+      });
+
+      socket.on('color error', function() {
+        $('#messages').append('<div><strong>ERROR: That is not a valid color. Please try again</strong></div>');
+      });
+      
+      socket.on('chat history', function(messagesArr){
+        messagesArr.forEach(msg => {
+            $('#messages').append(msg);
+        });
+    })
+
+      socket.on('edit users', function(activeUsers){
+        document.getElementById("users").innerHTML = '';
+        activeUsers.forEach(user => {
+          $('#users').append($('<li>').text(user.name));
+        });
+      });
+      
+      socket.on('user disconnected', function(name){
+          $('#messages').append($('<div>').text(name + " has disconnected"));
+      });
+
+    });
+    </script>
+  </head>
+  <body>
+    <div class="title-wrap">
+        <span><h2 class="message-title"></h2></span>
+        <span><h2 class="user-title">Online Users:</h2></span>
+    </div>
+    <div class="messages-list">
+      <div id="messages"></div>
+    </div>
+    <div class="user-list">
+      <ul id="users"></ul>
+    </div>
+    <form action="">
+      <input id="message" placeholder="Aa" autocomplete="off" /><button>Send</button>
+    </form>
+  </body>
+</html>
