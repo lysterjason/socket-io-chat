@@ -1,0 +1,128 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Abel', sans-serif;
+}
+
+*:focus {
+  outline: none !important;
+}
+
+body {
+  font: 13px Helvetica, Arial; 
+  background: -webkit-linear-gradient(to right, #cc5333, #23074d);
+  background: linear-gradient(to right, #cc5333, #23074d);
+  height: 100vh;
+  position: relative;
+}
+
+form {
+  padding: 0px 10px 0px 10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+form input {
+  border: 0;
+  padding: 10px;
+  width: 90%;
+  margin-right: .5%;
+  outline: none;
+  background-color: rgba(108, 122, 137, 1);
+  color: white;
+  border-radius: 5px;
+}
+
+.title-wrap {
+  margin-left: 10px;
+  padding-top: 35px;
+}
+
+.message-title {
+  display: inline-block;
+  color: white;
+  width: 67.4%;
+}
+
+.user-title {
+  display: inline-block;
+  color: white;
+  width: 30%;
+  padding-left: 15px;
+  position: fixed;
+}
+
+.messages-list {
+  display: table;
+  float: left;
+  background-color: rgba(108, 122, 137, 0.50);
+  height: 80%;
+  width: 67%;
+  border-radius: 5px;
+  margin-left: 10px;
+  position: absolute;
+  margin-bottom: 4%;
+}
+
+.user-list {
+  background-color: rgba(108, 122, 137, 0.50);
+  height: 80%;
+  width: 30%;
+  border-radius: 5px;
+  margin-right: 0px !important;
+  margin-left: 68.8%;
+  margin-bottom: 4%;
+  position: fixed;
+}
+
+::placeholder {
+  color: white;
+  opacity: 1;
+}
+
+form button {
+  width: 9%;
+  background: #cc5333;
+  padding: 10px;
+  background: rgba(108, 122, 137, 0.50);
+  color: white;
+  border-radius: 5px;
+  border: none;
+}
+
+form button:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+#messages {
+  display: table-cell;
+  vertical-align: bottom !important;
+  padding: 5px;
+  overflow: auto;
+  margin-bottom: 15%;
+  height: 80%;
+  width: 67%;
+}
+
+#messages div {
+  margin: 0px;
+  padding: 5px 10px;
+  color: white;
+  display: block;
+  bottom: 0;
+}
+
+#users {
+  list-style: none;
+}
+
+#users li {
+  color: white;
+  padding: 5px 10px;
+}
+
+#messages div:nth-child(odd) {
+  background:rgba(255, 255, 255, 0.4);
+}
