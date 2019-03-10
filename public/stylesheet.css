@@ -18,7 +18,7 @@ body {
 }
 
 form {
-  padding: 10px;
+  padding: 0px 10px 0px 10px;
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -30,7 +30,7 @@ form input {
   width: 90%;
   margin-right: .5%;
   outline: none;
-  background-color: rgba(108, 122, 137, 0.50);
+  background-color: rgba(108, 122, 137, 1);
   color: white;
   border-radius: 5px;
 }
@@ -50,7 +50,8 @@ form input {
   display: inline-block;
   color: white;
   width: 30%;
-  padding-left: 15px
+  padding-left: 15px;
+  position: fixed;
 }
 
 .messages-list {
@@ -61,7 +62,8 @@ form input {
   width: 67%;
   border-radius: 5px;
   margin-left: 10px;
-  position: fixed;
+  position: absolute;
+  margin-bottom: 4%;
 }
 
 .user-list {
@@ -71,6 +73,7 @@ form input {
   border-radius: 5px;
   margin-right: 0px !important;
   margin-left: 68.8%;
+  margin-bottom: 4%;
   position: fixed;
 }
 
@@ -97,7 +100,10 @@ form button:hover {
   display: table-cell;
   vertical-align: bottom !important;
   padding: 5px;
+  overflow: auto;
   margin-bottom: 15%;
+  height: 80%;
+  width: 67%;
 }
 
 #messages div {
@@ -105,6 +111,7 @@ form button:hover {
   padding: 5px 10px;
   color: white;
   display: block;
+  bottom: 0;
 }
 
 #users {
