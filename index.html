@@ -16,15 +16,16 @@
 
       socket.on('create user', function(obj){
         if (document.cookie.split(';').filter((item) => item.trim().startsWith('name=')).length) {
-          console.log(document.cookie);
           let cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)name\s*\=\s*([^;]*).*$)|^.*$/, "$1");
           currentUser.name = cookieValue;
           currentUser.color = 'ffffff';
           socket.emit('cookie exists', cookieValue);
           $('.message-title').append($('<span>').text("You are " + cookieValue));
         } else {
-          console.log('cookie does not exist')
-          document.cookie = "name="+obj.name;
+          var expiryDate = new Date();
+          expiryDate.setMonth(expiryDate.getMonth() + 1);
+          document.cookie = "expires=" + expiryDate.toUTCString() + ";";
+          document.cookie = "name=" + obj.name;
           socket.emit('cookie does not exist');
           currentUser.name = obj.name;
           currentUser.color = 'ffffff'
@@ -41,21 +42,41 @@
       
       socket.on('you connected', function(){
         $('#messages').append('<div><strong>Chat Room: You have connected</strong></div>');
+        $('#messages').scrollTop($('#messages')[0].scrollHeight);
+            
+            $('html, body').animate({
+                scrollTop: $('#messages').offset().top + $('#messages')[0].scrollHeight
+            }, 500);
       });
       
       socket.on('user connected', function(user){
         $('#messages').append($('<div>').text(user.name + " has connected"));
+        $('#messages').scrollTop($('#messages')[0].scrollHeight);
+          
+          $('html, body').animate({
+              scrollTop: $('#messages').offset().top + $('#messages')[0].scrollHeight
+          }, 500);
       });
       
       socket.on('my message', function(msg, time, user){
           if(msg != ""){
             $('#messages').append('<div>'+ time + ' ' + '<p style="display: inline; color: #' + user.color + ';"> ' + user.name + '</p>' + ': ' +'<strong>'+ msg +'</strong>'+'</div>');
+            $('#messages').scrollTop($('#messages')[0].scrollHeight);
+            
+            $('html, body').animate({
+                scrollTop: $('#messages').offset().top + $('#messages')[0].scrollHeight
+            }, 500);
           };
       });
 
       socket.on('user message', function(msg, time, user){
           if(msg != ""){
             $('#messages').append('<div>'+ time + ' ' + '<p style="display: inline; color: #' + user.color + ';"> ' + user.name + '</p>' + ': ' + msg + '</div>');
+            $('#messages').scrollTop($('#messages')[0].scrollHeight);
+            
+            $('html, body').animate({
+                scrollTop: $('#messages').offset().top + $('#messages')[0].scrollHeight
+            }, 500);
           };
       });
       
@@ -64,27 +85,57 @@
           currentUser.name = user.name;
           document.cookie = "name="+user.name;
           $('.message-title').text("You are " + currentUser.name);
+          $('#messages').scrollTop($('#messages')[0].scrollHeight);
+            
+            $('html, body').animate({
+                scrollTop: $('#messages').offset().top + $('#messages')[0].scrollHeight
+            }, 500);
       });
 
       socket.on('personal color change', function(user, time){
           $('#messages').append('<div>' + time + " " + '<p style="display: inline; color: #' + user.color + ';"> ' + user.name + '</p>' + ": " + '<strong>' + user.name + " changed their color " + '</strong>' + '</div>');
           currentUser.color = user.color
+          $('#messages').scrollTop($('#messages')[0].scrollHeight);
+            
+            $('html, body').animate({
+                scrollTop: $('#messages').offset().top + $('#messages')[0].scrollHeight
+            }, 500);
       });
 
       socket.on('username change', function(user, time, oldName){
           $('#messages').append($('<div>' + time + " " + '<p style="display: inline; color: #' + user.color + ';"> ' + user.name + '</p>' + ": " + oldName + " changed their username to " + user.name + '</div>'));
+          $('#messages').scrollTop($('#messages')[0].scrollHeight);
+            
+            $('html, body').animate({
+                scrollTop: $('#messages').offset().top + $('#messages')[0].scrollHeight
+            }, 500);
       });
 
        socket.on('color change', function(user, time){
           $('#messages').append($('<div>' + time + " " + '<p style="display: inline; color: #' + user.color + ';"> ' + user.name + '</p>' + ": " + user.name + " changed their color" + '</div>'));
+          $('#messages').scrollTop($('#messages')[0].scrollHeight);
+            
+            $('html, body').animate({
+                scrollTop: $('#messages').offset().top + $('#messages')[0].scrollHeight
+            }, 500);
       });
 
       socket.on('username error', function() {
         $('#messages').append('<div><strong>ERROR: That username is taken. Please try a different username</strong></div>');
+        $('#messages').scrollTop($('#messages')[0].scrollHeight);
+            
+            $('html, body').animate({
+                scrollTop: $('#messages').offset().top + $('#messages')[0].scrollHeight
+            }, 500);
       });
 
       socket.on('color error', function() {
         $('#messages').append('<div><strong>ERROR: That is not a valid color. Please try again</strong></div>');
+        $('#messages').scrollTop($('#messages')[0].scrollHeight);
+            
+            $('html, body').animate({
+                scrollTop: $('#messages').offset().top + $('#messages')[0].scrollHeight
+            }, 500);
       });
       
       socket.on('chat history', function(messagesArr){
